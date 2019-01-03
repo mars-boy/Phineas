@@ -1,0 +1,23 @@
+dependencies:
+ - python=3.5
+ - numpy==1.14.5
+ - scipy
+ - scikit-learn
+ - jupyter
+ - requests
+ - pandas
+ - seaborn
+ - click
+ - openpyxl
+ - tensorflow
+ - pip:
+   - setuptools<=39.1.0
+   - watermark
+   - pytest
+   - SpeechRecognition
+   - python_speech_features
+   - pyaudio
+   - beautifulsoup4
+   - google
+   - PyHamcrest
+   - cython
