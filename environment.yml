@@ -1,6 +1,6 @@
 dependencies:
- - python=3.5
- - numpy==1.14.5
+ - python
+ - numpy
  - scipy
  - scikit-learn
  - jupyter
@@ -10,8 +10,9 @@ dependencies:
  - click
  - openpyxl
  - tensorflow
+ - keras
  - pip:
-   - setuptools<=39.1.0
+   - setuptools
    - watermark
    - pytest
    - SpeechRecognition
@@ -21,3 +22,5 @@ dependencies:
    - google
    - PyHamcrest
    - cython
+   - html5lib
+   - selenium
