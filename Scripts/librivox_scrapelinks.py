@@ -9,6 +9,10 @@ from bs4 import BeautifulSoup
 import pickle
 import pathlib
 import urllib.request
+import requests
+import zipfile
+import io
+import re
 
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ExpoCon
@@ -22,6 +26,7 @@ EMPTY_STR = ''
 librivox_file_name = 'librivox_download_links.txt'
 NEW_LINE = '\n'
 CURRENT_DIRECTORY = os.getcwd()
+librivox_downloaded_file_name = 'librivox_downloaded_list.txt'
 
 timeout = 4 
 
@@ -58,6 +63,12 @@ book_download_list = [item for item in book_download_list if item not in existin
 with open(librivox_file_name, 'a') as librivox_file:
     librivox_file.write(NEW_LINE.join(book_download_list))
 
+if not os.path.exists(librivox_downloaded_file_name):
+    lib_file = os.open(librivox_downloaded_file_name, mode)
+    os.close(lib_file)
+
+downloaded_links = [line.strip(NEW_LINE) for line in open(librivox_downloaded_file_name, 'r')]
+
 # Download links
 # Today I'm lazy to write a separate file so I'll move the code later on 
 # until then let it rest here
@@ -73,6 +84,12 @@ for url in books_main_links_list:
     if not os.path.exists(file_directory):
         os.makedirs(file_directory)
     download_link = soup.select('dl.listen-download dd a')[0].get('href')
-    final_directory = os.path.join(file_directory, download_link.split("http://www.archive.org/download//")[1].replace(r'/','_'))
-    if not os.path.exists(final_directory):
-        urllib.request.urlretrieve(download_link, final_directory)
+    if not download_link in downloaded_links:
+        request = requests.get(download_link)
+        d = request.headers['content-disposition']
+        fname = re.findall("filename=(.+)", d)
+        print(fname)
+        zip_file = zipfile.ZipFile(io.BytesIO(request.content))
+        zip_file.extractall(file_directory)
+        with open(librivox_downloaded_file_name, 'a') as librivox_file:
+            librivox_file.write(download_link+'\n')
